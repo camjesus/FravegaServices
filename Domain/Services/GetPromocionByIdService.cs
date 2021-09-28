@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Domain.Core.Data;
+﻿using Domain.Core.Data;
 using FravegaService.Models;
 using Microsoft.Extensions.Logging;
 using System;

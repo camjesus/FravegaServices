@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
+using FravegaService.Models;
 using FravegaService.Services;
-using FravegaService.Services.DTO;
 using Moq;
 using System;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ namespace Domain.Core.Tests
         {
             //Preparación
             Guid id = new Guid("casdsadsa");
-            var mock = new Mock<Promocion>();
+            var mock = new Mock<Promotion>();
             mock.SetupAllProperties();
             mock.SetupGet(p => p.Id).Returns(id);
 

@@ -1,44 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using Domain.Core.Data;
 using FravegaService.Models;
-using FravegaService.Services.DTO;
 using Microsoft.Extensions.Logging;
-using FravegaService.Infrastructure;
-using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FravegaService.Services
 {
     public interface IGetPromocionesVigentesService
     {
-        Task<List<PromocionVigente>> GetPromocionesVigentes(DateTime fecha, string banco, string medioDePago, IEnumerable<string> categorias);
+        Task<IEnumerable<CurrentPromotion>> GetPromocionesVigentes(DateTime fecha, string banco, string medioDePago, IEnumerable<string> categorias);
     }
+
     public class GetPromocionesVigentesService : IGetPromocionesVigentesService
     {
-        private readonly ILogger<PromocionEntity> _logger;
-        private readonly AppDbContext _db;
-        private readonly IMapper _mapper;
+        private readonly ILogger<Promotion> _logger;
+        private readonly IPromotionRepository _promotion;
 
-        public GetPromocionesVigentesService(ILogger<PromocionEntity> logger, AppDbContext db, IMapper mapper)
+        public GetPromocionesVigentesService(ILogger<Promotion> logger, IPromotionRepository promotion)
         {
             _logger = logger;
-            _db = db;
-            _mapper = mapper;
+            _promotion = promotion;
         }
 
-        public async Task<List<PromocionVigente>> GetPromocionesVigentes(DateTime fecha, string banco, string medioDePago, IEnumerable<string> categorias)
+        public async Task<IEnumerable<CurrentPromotion>> GetPromocionesVigentes(DateTime fecha, string banco, string medioDePago, IEnumerable<string> categorias)
         {
-            List<PromocionVigente> promosVigentes = new List<PromocionVigente>();
+            List<CurrentPromotion> promoCurrent = new List<CurrentPromotion>();
 
-            var filter = Builders<PromocionEntity>.Filter.Eq(x => x.Activo, true);
+            var promosEntity = await _promotion.FindAllAsync(x => x.Activo == true && x.FechaFin <= DateTime.Now && x.FechaInicio >= fecha);
 
-            var promosEntity = await _db.Promociones.Find(x => x.Activo == true && x.FechaFin <= DateTime.Now && x.FechaInicio >= fecha).ToListAsync();
-            //BUSCAR SEARCH STRING IN ARRAY  
-            //var @event = await _db.Promociones.Find($"{{ _id: ObjectId('507f1f77bcf86cd799439011') }}").SingleAsync();
+            foreach (Promotion p in promosEntity)
+            {
+                CurrentPromotion cp = new CurrentPromotion();
+                cp.Id = p.Id;
+                cp.MaximaCantidadDeCuotas = p.MaximaCantidadDeCuotas;
+                cp.MediosDePago = p.MediosDePago;
+                cp.Bancos = p.Bancos;
+                cp.CategoriasProductos = p.CategoriasProductos;
+                cp.PorcentajeDedescuento = p.PorcentajeDedescuento;
+                cp.ValorInteresesCuotas = p.ValorInteresesCuotas;
+                promoCurrent.Add(cp);
+            }
 
-            return _mapper.Map<List<PromocionVigente>>(promosEntity);
+            return promoCurrent;
         }
     }
 }

@@ -1,45 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
+using Domain.Core.Data;
 using FravegaService.Models;
-using FravegaService.Services.DTO;
 using Microsoft.Extensions.Logging;
-using FravegaService.Infrastructure;
-using MongoDB.Driver;
+using System;
+using System.Threading.Tasks;
 
 namespace FravegaService.Services
 {
     public interface IUpdatePromocionService
     {
-        Task<Guid> UpdatePromocion(Promocion promo);
+        Task<Guid> UpdatePromocion(Promotion promo);
     }
+
     public class UpdatePromocionService : IUpdatePromocionService
     {
-        private readonly ILogger<PromocionEntity> _logger;
-        private readonly AppDbContext _db;
+        private readonly ILogger<Promotion> _logger;
         private readonly ValidarPromocionService _validarPromocion;
+        private readonly IPromotionRepository _promotion;
         private readonly IMapper _mappper;
-        public UpdatePromocionService(ILogger<PromocionEntity> logger, AppDbContext db, IMapper mapper, ValidarPromocionService validarPromocion)
+
+        public UpdatePromocionService(ILogger<Promotion> logger, ValidarPromocionService validarPromocion, IPromotionRepository promotion)
         {
             _logger = logger;
-            _db = db;
-            _mappper = mapper;
             _validarPromocion = validarPromocion;
+            _promotion = promotion;
         }
 
-        public async Task<Guid> UpdatePromocion(Promocion promo)
+        public async Task<Guid> UpdatePromocion(Promotion promo)
         {
             _validarPromocion.ValidarPromocion(promo);
 
-            var filter = Builders<PromocionEntity>.Filter.Eq(s => s.Id, promo.Id);
-            var update = Builders<PromocionEntity>.Update.Set(s => s.MediosDePago, promo.MediosDePago).Set(s => s.Bancos, promo.Bancos)
-                                                         .Set(s => s.CategoriasProductos, promo.CategoriasProductos).Set(s => s.MaximaCantidadDeCuotas, promo.MaximaCantidadDeCuotas)
-                                                         .Set(s => s.ValorInteresesCuotas, promo.ValorInteresesCuotas).Set(s => s.PorcentajeDedescuento, promo.PorcentajeDedescuento)
-                                                         .Set(s => s.FechaInicio, promo.FechaInicio).Set(s => s.FechaFin, promo.FechaFin).Set(s => s.FechaModificacion, DateTime.Now);
+            Promotion promoUpd = new Promotion(promo.Id, promo.MediosDePago, promo.Bancos, promo.CategoriasProductos, promo.MaximaCantidadDeCuotas,
+                promo.ValorInteresesCuotas, promo.PorcentajeDedescuento, promo.FechaInicio, promo.FechaFin, true, promo.FechaCreacion, DateTime.Now);
 
-            await _db.Promociones.UpdateOneAsync(filter, update);
+            await _promotion.Update(promoUpd);
             return promo.Id;
         }
     }
