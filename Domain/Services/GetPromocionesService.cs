@@ -24,6 +24,7 @@ namespace FravegaService.Services
 
         public async Task<IEnumerable<Promotion>> GetPromociones()
         {
+            _logger.LogInformation("Obtengo todas las promociones");
             return await _promotion.GetAllAsync();
         }
     }

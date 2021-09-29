@@ -8,8 +8,7 @@ namespace Domain.Core.Data
 {
     public interface IRepository<T> where T : class
     {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> match);
+        Task<List<T>> GetAllAsync();
         Task<T> FindOne(Guid id);
         Task AddAsync(T obj);
         Task Update(T obj);
