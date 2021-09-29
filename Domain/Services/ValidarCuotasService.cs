@@ -1,5 +1,5 @@
-﻿using Domain.Core.Data;
-using FravegaService.Models;
+﻿using Domain.Core.Exceptions;
+using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -7,7 +7,7 @@ namespace FravegaService.Services
 {
     public interface IValidarCuotasService
     {
-        void ValidarCuotas(int? cuotas, decimal? porcentaje);
+        void ValidarCuotas(Promotion promotion);
     }
 
     public class ValidarCuotasService : IValidarCuotasService
@@ -19,23 +19,26 @@ namespace FravegaService.Services
             _logger = logger;
         }
 
-        public void ValidarCuotas(int? cuotas, decimal? porcentaje)
+        public void ValidarCuotas(Promotion promotion)
         {
             _logger.LogInformation("Valido cuotas");
 
-            if (cuotas == null && porcentaje == null)
+            if (promotion.MaximaCantidadDeCuotas == null && promotion.PorcentajeDedescuento == null)
             {
                 _logger.LogError("Error en validacion de Promocion : La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
-                throw new Exception("La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
+                throw new CantidadDeCuotasOProcentajeDescuentoTieneQueTenerValorException();
             }
 
-            if (cuotas == null && porcentaje != null)
+            if (promotion.MaximaCantidadDeCuotas != null && promotion.PorcentajeDedescuento != null)
+            {
+                throw new Exception("no se pueden los dos juntos");
+            }
+
+            if (promotion.MaximaCantidadDeCuotas == null && promotion.ValorInteresesCuotas != null)
             {
                 _logger.LogError("Error en validacion de Promocion : La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
-                throw new Exception("Si tenes un porcentaje de descuento, debes agregar una cantidad de cuotas");
+                throw new Exception("Si tenes un interes, debes agregar una cantidad de cuotas");
             }
-
-          
         }
     }
 }

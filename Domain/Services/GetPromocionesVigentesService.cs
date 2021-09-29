@@ -27,7 +27,8 @@ namespace FravegaService.Services
         {
             List<CurrentPromotion> promoCurrent = new List<CurrentPromotion>();
 
-            var promosEntity = await _promotion.FindAllAsync(x => x.Activo == true && x.FechaFin <= DateTime.Now && x.FechaInicio >= fecha);
+            var promosEntity = await _promotion.GetAllAsync();
+                //.FindAllAsync(x => x.Activo == true && x.FechaFin <= DateTime.Now && x.FechaInicio >= fecha);
 
             foreach (Promotion p in promosEntity)
             {

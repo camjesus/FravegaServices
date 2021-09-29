@@ -1,5 +1,5 @@
 ﻿using Domain.Core.Data;
-using FravegaService.Models;
+using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
 

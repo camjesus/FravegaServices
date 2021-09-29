@@ -5,10 +5,10 @@ namespace FravegaService.Models
 {
     public class Promotion
     {
-        public Promotion(Guid id, IEnumerable<string> mediosDePago, IEnumerable<string> bancos, IEnumerable<string> categoriasProductos, int? maximaCantidadDeCuotas,
-           decimal? valorInteresesCuotas, decimal? porcentajeDedescuento, DateTime? fechaInicio, DateTime? fechaFin, bool activo, DateTime fechaCreacion, DateTime? fechaModificacion)
+        public Promotion(IEnumerable<string> mediosDePago, IEnumerable<string> bancos, IEnumerable<string> categoriasProductos, int? maximaCantidadDeCuotas,
+           decimal? valorInteresesCuotas, decimal? porcentajeDedescuento, DateTime? fechaInicio, DateTime? fechaFin)
         {
-            Id = id;
+            Id = Guid.NewGuid();
             MediosDePago = mediosDePago;
             Bancos = bancos;
             CategoriasProductos = categoriasProductos;
@@ -17,9 +17,9 @@ namespace FravegaService.Models
             PorcentajeDedescuento = porcentajeDedescuento;
             FechaInicio = fechaInicio;
             FechaFin = fechaFin;
-            Activo = activo;
-            FechaCreacion = fechaCreacion;
-            FechaModificacion = fechaCreacion;
+            Activo = true;
+            FechaCreacion = DateTime.Now;
+            FechaModificacion = null;
         }
 
         public Guid Id { get; private set; }
@@ -35,8 +35,5 @@ namespace FravegaService.Models
         public bool Activo { get; private set; }
         public DateTime FechaCreacion { get; private set; }
         public DateTime? FechaModificacion { get; private set; }
-
     }
-
-   
 }
