@@ -31,9 +31,9 @@ namespace Domain.Core.Tests.Services
         }
 
         [Theory]
-        [InlineDefaultData(2, typeof(Promotion), typeof(ValidarPorcentajeService))]
-        [InlineDefaultData(5, typeof(Promotion), typeof(ValidarPorcentajeService))]
-        [InlineDefaultData(100, typeof(Promotion), typeof(ValidarPorcentajeService))]
+        [InlineDefaultData(2, null)]
+        [InlineDefaultData(5, null, null)]
+        [InlineDefaultData(100, null, null)]
         public void ValidarPorcentaje_Valid2_ShouldNotThrowException(int input,
            Promotion promotion,
            ValidarPorcentajeService sut)
