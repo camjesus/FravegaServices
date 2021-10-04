@@ -10,23 +10,20 @@ namespace FravegaService.Services
 {
     public interface IDeletePromotionService
     {
-        Task<Guid> Delete(Guid id);
+        Task<Guid> DeletePromotion(Guid id);
     }
 
     public class DeletePromotionService : IDeletePromotionService
     {
-        private readonly ILogger<Promotion> _logger;
         private readonly IPromotionRepository _promotion;
 
-        public DeletePromotionService(ILogger<Promotion> logger, IPromotionRepository promotion)
+        public DeletePromotionService( IPromotionRepository promotion)
         {
-            _logger = logger;
             _promotion = promotion;
         }
 
-        public async Task<Guid> Delete(Guid id)
+        public async Task<Guid> DeletePromotion(Guid id)
         {
-            _logger.LogInformation("Borrado logico de Id:" + id);
             var promotionEntity = await _promotion.FindOneAsync(id);
 
             promotionEntity.Delete();

@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Domain.Core.Exceptions;
+using FluentAssertions;
 using FravegaService.Domain.Core.DTO;
 using FravegaService.Services;
 using System;
@@ -12,14 +13,16 @@ namespace Domain.Core.Tests.Services
     public class ValidarPorcentajeServiceTests
     {
         [Theory]
-        [DefaultData]
+        [InlineDefaultData(5)]
+        [InlineDefaultData(80)]
         public void ValidarPorcentaje_Valid_ShouldNotThrowException(
+            int? porcentajeDeDescuento,
             Promotion promotion,
             ValidarPorcentajeService sut)
         {
             //arrange
 
-            promotion.PorcentajeDedescuento = 5;
+            promotion.PorcentajeDedescuento = porcentajeDeDescuento;
 
             //act
 
@@ -31,16 +34,16 @@ namespace Domain.Core.Tests.Services
         }
 
         [Theory]
-        [InlineDefaultData(2, null)]
-        [InlineDefaultData(5, null, null)]
-        [InlineDefaultData(100, null, null)]
-        public void ValidarPorcentaje_Valid2_ShouldNotThrowException(int input,
-           Promotion promotion,
-           ValidarPorcentajeService sut)
+        [InlineDefaultData(4)]
+        [InlineDefaultData(81)]
+        public void ValidarPorcentaje_ValidFueraDeRango_ShouldThrowElPorcentanjeEstaFueraDelRangoPermitidoException(
+           int? porcentajeDeDescuento,
+            Promotion promotion,
+            ValidarPorcentajeService sut)
         {
             //arrange
            
-            promotion.PorcentajeDedescuento = input;
+            promotion.PorcentajeDedescuento = porcentajeDeDescuento;
 
             //act
 
@@ -48,7 +51,7 @@ namespace Domain.Core.Tests.Services
 
             //assert
             
-            act.Should().NotThrow();
+            act.Should().Throw<ElPorcentanjeEstaFueraDelRangoPermitidoException>();
         }
     }
 
