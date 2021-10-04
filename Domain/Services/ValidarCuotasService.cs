@@ -7,7 +7,8 @@ namespace FravegaService.Services
 {
     public interface IValidarCuotasService
     {
-        void ValidarCuotas(Promotion promotion);
+        void ValidarValorInteres(Promotion promotion);
+        void ValidarCuotasYPorcentaje(Promotion promotion);
     }
 
     public class ValidarCuotasService : IValidarCuotasService
@@ -19,10 +20,8 @@ namespace FravegaService.Services
             _logger = logger;
         }
 
-        public void ValidarCuotas(Promotion promotion)
+        public void ValidarCuotasYPorcentaje(Promotion promotion)
         {
-            _logger.LogInformation("Valido cuotas");
-
             if (promotion.MaximaCantidadDeCuotas == null && promotion.PorcentajeDedescuento == null)
             {
                 _logger.LogError("Error en validacion de Promocion : La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
@@ -33,12 +32,17 @@ namespace FravegaService.Services
             {
                 throw new CantidadDeCuotasYPorcentajeAmbosNoPuedenTenerValorException();
             }
+        }
 
+        public void ValidarValorInteres(Promotion promotion)
+        {
             if (promotion.MaximaCantidadDeCuotas == null && promotion.ValorInteresesCuotas != null)
             {
                 _logger.LogError("Error en validacion de Promocion : La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
                 throw new AlAgregarValorDeIntesDebeTenerCantidadDeCuotasException();
             }
         }
+
+        
     }
 }
