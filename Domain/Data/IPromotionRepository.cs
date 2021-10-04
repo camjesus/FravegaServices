@@ -8,8 +8,8 @@ namespace Domain.Core.Data
 {
     public interface IPromotionRepository : IRepository<Promotion>
     {
-        Task<IEnumerable<Promotion>> FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosIn(bool activo, IEnumerable<string> CategoriasProductos, IEnumerable<string> MediosDePago, IEnumerable<string> Bancos);
-        Task<IEnumerable<Promotion>> FindByActivoAndFechaInicioLessThanEqual();
+        Task<IEnumerable<Promotion>> FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosInAsync(bool activo, IEnumerable<string> CategoriasProductos, IEnumerable<string> MediosDePago, IEnumerable<string> Bancos);
+        Task<IEnumerable<Promotion>> FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual(bool activo, DateTime fechaInicio, DateTime fechaFin);
 
     }
 

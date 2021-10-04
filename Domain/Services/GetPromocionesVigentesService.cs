@@ -23,12 +23,12 @@ namespace FravegaService.Services
             _promotion = promotion;
         }
 
-        public async Task<IEnumerable<CurrentPromotion>> GetPromocionesVigentes(DateTime fecha, string banco, string medioDePago, IEnumerable<string> categorias)
+        public async Task<IEnumerable<CurrentPromotion>> GetPromocionesVigentes(DateTime fechaFin, string banco, string medioDePago, IEnumerable<string> categorias)
         {
             List<CurrentPromotion> promoCurrent = new List<CurrentPromotion>();
 
-            var promosEntity = await _promotion.GetAllAsync();
-                //.FindAllAsync(x => x.Activo == true && x.FechaFin <= DateTime.Now && x.FechaInicio >= fecha);
+            var promosEntity = await _promotion.FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual(true, DateTime.Now, fechaFin);
+
 
             foreach (Promotion p in promosEntity)
             {

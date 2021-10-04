@@ -1,5 +1,6 @@
 ﻿using Domain.Core.Data;
-using FravegaService.Models;
+using Domain.Core.Exceptions;
+using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -7,7 +8,7 @@ namespace FravegaService.Services
 {
     public interface IValidarPorcentajeService
     {
-        void ValidarPorcentaje(decimal? porcentaje);
+        void ValidarPorcentaje(Promotion promotion);
     }
 
     public class ValidarPorcentajeService : IValidarPorcentajeService
@@ -19,13 +20,13 @@ namespace FravegaService.Services
             _logger = logger;
         }
 
-        public void ValidarPorcentaje(decimal? porcentaje)
+        public void ValidarPorcentaje(Promotion promotion)
         {
             _logger.LogInformation("Se valida el porcentaje");
-            if (porcentaje < 5 || porcentaje > 80)
+            if (promotion.PorcentajeDedescuento < 5 || promotion.PorcentajeDedescuento > 80)
             {
-                _logger.LogError("El porcentaje de descuento esta fuera del rango permitido. porcentaje:" + porcentaje);
-                throw new Exception("El porcentaje de descuento esta fuera del rango permitido.");
+                _logger.LogError("El porcentaje de descuento esta fuera del rango permitido. porcentaje:" + promotion.PorcentajeDedescuento);
+                throw new ElPorcentanjeEstaFueraDelRangoPermitidoException();
             }
         }
     }

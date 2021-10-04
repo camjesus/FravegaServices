@@ -20,7 +20,7 @@ namespace Domain.Core.Tests.Services
         [DefaultData]
         public async Task AddPromocionEntity_Valid_ShouldWork(
             Promotion dto,
-            [Frozen] Mock<IValidarCrearPromocionService> validarCrearPromocionServiceMock,
+            [Frozen] Mock<IValidarPromocionService> validarCrearPromocionServiceMock,
             [Frozen] Mock<IPromotionRepository> promotionRepositoryMock,
             AddPromocionEntityService sut //system under test
             )
@@ -65,7 +65,7 @@ namespace Domain.Core.Tests.Services
         [DefaultData]
         public async Task AddPromocionEntity_ValidationThrowException_ShouldThrowException(
             Promotion dto,
-            [Frozen] Mock<IValidarCrearPromocionService> validarCrearPromocionServiceMock,
+            [Frozen] Mock<IValidarPromocionService> validarCrearPromocionServiceMock,
             [Frozen] Mock<IPromotionRepository> promotionRepositoryMock,
             Exception exception,
             AddPromocionEntityService sut //system under test

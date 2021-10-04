@@ -25,7 +25,7 @@ namespace FravegaService.Services
         public async Task<Promotion> GetPromocionById(Guid id)
         {
             _logger.LogInformation("Se consulta promocion por Id" + id);
-            return await _promotion.FindOne(id);
+            return await _promotion.FindOneAsync(id);
         }
     }
 }

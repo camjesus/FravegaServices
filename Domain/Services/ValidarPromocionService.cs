@@ -7,33 +7,37 @@ using System.Threading.Tasks;
 
 namespace Domain.Core.Services
 {
-    public interface IValidarCrearPromocionService
+    public interface IValidarPromocionService
     {
         Task ValidarAsync(Promotion promotion);
     }
 
-    public class ValidarCrearPromocionService : IValidarCrearPromocionService
+    public class ValidarPromocionService : IValidarPromocionService
     {
         private readonly IValidarCuotasService _validarCuotasSrv;
         private readonly IValidarExistenciaService _validarExistenciaSrv;
         private readonly IValidarPorcentajeService _validarPorcentajeSrv;
+        private readonly IValidarFechasService _validarFechasSrv;
 
 
-        public ValidarCrearPromocionService(
+        public ValidarPromocionService(
             IValidarCuotasService validarCuotasSrv,
             IValidarExistenciaService validarExistenciaSrv,
-            IValidarPorcentajeService validarPorcentajeSrv)
+            IValidarPorcentajeService validarPorcentajeSrv,
+            IValidarFechasService validarFechasSrv)
         {
             _validarCuotasSrv = validarCuotasSrv ?? throw new ArgumentNullException(nameof(validarCuotasSrv));
             _validarExistenciaSrv = validarExistenciaSrv ?? throw new ArgumentNullException(nameof(validarExistenciaSrv));
             _validarPorcentajeSrv = validarPorcentajeSrv ?? throw new ArgumentNullException(nameof(validarPorcentajeSrv));
+            _validarFechasSrv = validarFechasSrv ?? throw new ArgumentNullException(nameof(validarFechasSrv));
         }
 
         public async Task ValidarAsync(Promotion promotion)
         {
             _validarExistenciaSrv.ValidarExistencia(promotion);
             _validarCuotasSrv.ValidarCuotas(promotion);
-            _validarPorcentajeSrv.ValidarPorcentaje(promotion.PorcentajeDedescuento);
+            _validarPorcentajeSrv.ValidarPorcentaje(promotion);
+            _validarFechasSrv.ValidarFechas((DateTime)promotion.FechaInicio, (DateTime)promotion.FechaFin);
         }
     }
 }

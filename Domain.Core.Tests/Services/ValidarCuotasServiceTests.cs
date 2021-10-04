@@ -2,8 +2,6 @@
 using FravegaService.Domain.Core.DTO;
 using FravegaService.Services;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Tests.Utils;
 using Xunit;
 
@@ -32,7 +30,6 @@ namespace Domain.Core.Tests.Services
 
             act.Should().NotThrow();
         }
-
 
         [Theory]
         [DefaultData]

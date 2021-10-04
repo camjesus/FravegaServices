@@ -9,10 +9,9 @@ namespace Domain.Core.Data
     public interface IRepository<T> where T : class
     {
         Task<List<T>> GetAllAsync();
-        Task<T> FindOne(Guid id);
+        Task<T> FindOneAsync(Guid id);
         Task AddAsync(T obj);
-        Task Update(T obj);
-        Task Remove(Guid id);
+        Task UpdateAsync(T obj);
     }
 
 }

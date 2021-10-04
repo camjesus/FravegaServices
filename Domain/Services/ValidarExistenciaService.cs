@@ -1,4 +1,5 @@
 ﻿using Domain.Core.Data;
+using Domain.Core.Exceptions;
 using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,16 +22,16 @@ namespace FravegaService.Services
             _promotion = promotion;
         }
 
-        public void ValidarExistencia(Promotion promo)
+        public void ValidarExistencia(Promotion promotion)
         {
             _logger.LogInformation("Valido existencia");
 
-            var promociones = _promotion.FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosIn(true, promo.CategoriasProductos, promo.MediosDePago, promo.Bancos);
+            var promociones = _promotion.FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosInAsync(true, promotion.CategoriasProductos, promotion.MediosDePago, promotion.Bancos);
             
             if (promociones != null)
             {
                 _logger.LogError("Error en validacion de Promocion : Ya existe una Promocion para estos bancos, categoria o  medio de pago");
-                throw new Exception("Ya existe una Promocion para estos bancos, categoria o  medio de pago");
+                throw new YaExistePromocionException();
             }
         }
     }

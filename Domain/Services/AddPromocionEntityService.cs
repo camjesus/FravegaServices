@@ -15,15 +15,15 @@ namespace FravegaService.Services
 
     public class AddPromocionEntityService : IAddPromocionEntityService
     {
-        private readonly IValidarCrearPromocionService _validarCrearPromocionService;
+        private readonly IValidarPromocionService _validarCrearPromocionService;
         private readonly IPromotionRepository _promotion;
 
 
         public AddPromocionEntityService(
-            IValidarCrearPromocionService validarCrearPromocionService,
+            IValidarPromocionService validarPromocionService,
             IPromotionRepository promotion)
         {
-            _validarCrearPromocionService = validarCrearPromocionService ?? throw new ArgumentNullException(nameof(validarCrearPromocionService));
+            _validarCrearPromocionService = validarPromocionService ?? throw new ArgumentNullException(nameof(validarPromocionService));
             _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         }
 

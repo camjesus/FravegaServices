@@ -31,13 +31,13 @@ namespace FravegaService.Services
 
             if (promotion.MaximaCantidadDeCuotas != null && promotion.PorcentajeDedescuento != null)
             {
-                throw new Exception("no se pueden los dos juntos");
+                throw new CantidadDeCuotasYPorcentajeAmbosNoPuedenTenerValorException();
             }
 
             if (promotion.MaximaCantidadDeCuotas == null && promotion.ValorInteresesCuotas != null)
             {
                 _logger.LogError("Error en validacion de Promocion : La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
-                throw new Exception("Si tenes un interes, debes agregar una cantidad de cuotas");
+                throw new AlAgregarValorDeIntesDebeTenerCantidadDeCuotasException();
             }
         }
     }

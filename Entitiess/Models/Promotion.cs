@@ -22,6 +22,33 @@ namespace FravegaService.Models
             FechaModificacion = null;
         }
 
+        //Update
+        public void UpdatePromotion(IEnumerable<string> mediosDePago, IEnumerable<string> bancos, IEnumerable<string> categoriasProductos, int? maximaCantidadDeCuotas,
+          decimal? valorInteresesCuotas, decimal? porcentajeDedescuento, DateTime? fechaInicio, DateTime? fechaFin)
+        {
+            MediosDePago = mediosDePago;
+            Bancos = bancos;
+            CategoriasProductos = categoriasProductos;
+            MaximaCantidadDeCuotas = maximaCantidadDeCuotas;
+            ValorInteresesCuotas = valorInteresesCuotas;
+            PorcentajeDedescuento = porcentajeDedescuento;
+            FechaInicio = fechaInicio;
+            FechaFin = fechaFin;
+            FechaModificacion = DateTime.Now;
+        }
+
+        public void ChangeVigencia(DateTime? fechaInicio, DateTime? fechaFin)
+        {
+            FechaInicio = fechaInicio;
+            FechaFin = fechaFin;
+            FechaModificacion = DateTime.Now;
+        }
+
+        public void Delete()
+        {
+            Activo = false;
+        }
+
         public Guid Id { get; private set; }
         public IEnumerable<string> MediosDePago { get; private set; }
         public IEnumerable<string> Bancos { get; private set; }
