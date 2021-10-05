@@ -18,7 +18,7 @@ namespace FravegaService.Models
             FechaInicio = fechaInicio;
             FechaFin = fechaFin;
             Activo = true;
-            FechaCreacion = DateTime.Now;
+            FechaCreacion = DateTime.Now.Date;
             FechaModificacion = null;
         }
 
@@ -34,14 +34,14 @@ namespace FravegaService.Models
             PorcentajeDedescuento = porcentajeDedescuento;
             FechaInicio = fechaInicio;
             FechaFin = fechaFin;
-            FechaModificacion = DateTime.Now;
+            FechaModificacion = DateTime.Now.Date;
         }
 
         public void ChangeVigencia(DateTime? fechaInicio, DateTime? fechaFin)
         {
             FechaInicio = fechaInicio;
             FechaFin = fechaFin;
-            FechaModificacion = DateTime.Now;
+            FechaModificacion = DateTime.Now.Date;
         }
 
         public void Delete()
