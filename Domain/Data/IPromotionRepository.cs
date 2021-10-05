@@ -10,7 +10,6 @@ namespace Domain.Core.Data
     {
         Task<IEnumerable<Promotion>> FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosInAsync(bool activo, IEnumerable<string> CategoriasProductos, IEnumerable<string> MediosDePago, IEnumerable<string> Bancos);
         Task<IEnumerable<Promotion>> FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual(bool activo, DateTime fechaInicio, DateTime fechaFin);
-
     }
 
 }

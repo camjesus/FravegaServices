@@ -13,18 +13,16 @@ namespace FravegaService.Services
 
     public class GetPromocionByIdService : IGetPromocionByIdService
     {
-        private readonly ILogger<Promotion> _logger;
         private readonly IPromotionRepository _promotion;
 
-        public GetPromocionByIdService(ILogger<Promotion> logger, IPromotionRepository promotion)
+        public GetPromocionByIdService(IPromotionRepository promotion)
         {
-            _logger = logger;
             _promotion = promotion;
         }
 
         public async Task<Promotion> GetPromocionById(Guid id)
         {
-            _logger.LogInformation("Se consulta promocion por Id" + id);
+            //_logger.LogInformation("Se consulta promocion por Id" + id);
             return await _promotion.FindOneAsync(id);
         }
     }

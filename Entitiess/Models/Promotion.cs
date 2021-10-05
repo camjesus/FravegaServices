@@ -50,6 +50,7 @@ namespace FravegaService.Models
                 throw new ArgumentException("promoción ya eliminada");
 
             Activo = false;
+            FechaModificacion = DateTime.Now.Date;
         }
 
         public Guid Id { get; private set; }

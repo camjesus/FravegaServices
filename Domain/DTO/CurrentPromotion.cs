@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FravegaService.Models
+namespace FravegaService.Domain.Core.DTO
 {
     public class CurrentPromotion
     {

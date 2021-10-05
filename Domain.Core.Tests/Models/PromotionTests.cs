@@ -1,6 +1,7 @@
 ﻿using AutoFixture.Xunit2;
 using Domain.Core.Data;
 using Domain.Core.Services;
+using Domain.Core.Tests.Services.Customizations;
 using FluentAssertions;
 using FravegaService.Models;
 using FravegaService.Services;
@@ -20,9 +21,13 @@ namespace Domain.Core.Tests.Models
         public void PromotionEntity_Valid_ShouldCreateEntity(
             Promotion dto)
         {
+            //arrange
+
+            //act
             var promotion = new Entities.Promotion(dto.MediosDePago, dto.Bancos, dto.CategoriasProductos, dto.MaximaCantidadDeCuotas,
                  dto.ValorInteresesCuotas, dto.PorcentajeDedescuento, dto.FechaInicio, dto.FechaFin);
 
+            //assert
             promotion.Id.Should().NotBeEmpty();
             promotion.MediosDePago.Should().BeEquivalentTo(dto.MediosDePago);
             promotion.Bancos.Should().BeEquivalentTo(dto.Bancos);
@@ -44,11 +49,14 @@ namespace Domain.Core.Tests.Models
             Promotion dto
             )
         {
+            //arrange
 
-            promotion.UpdatePromotion(dto.MediosDePago, dto.Bancos, dto.CategoriasProductos, dto.MaximaCantidadDeCuotas,
+            //act
+            Action act = () => promotion.UpdatePromotion(dto.MediosDePago, dto.Bancos, dto.CategoriasProductos, dto.MaximaCantidadDeCuotas,
                  dto.ValorInteresesCuotas, dto.PorcentajeDedescuento, dto.FechaInicio, dto.FechaFin);
 
-            //promotion.Id.Should().Be(promotion.Id);
+            //assert
+            act.Should().NotThrow();
             promotion.MediosDePago.Should().BeEquivalentTo(dto.MediosDePago);
             promotion.Bancos.Should().BeEquivalentTo(dto.Bancos);
             promotion.CategoriasProductos.Should().BeEquivalentTo(dto.CategoriasProductos);
@@ -57,18 +65,22 @@ namespace Domain.Core.Tests.Models
             promotion.PorcentajeDedescuento.Should().Be(dto.PorcentajeDedescuento);
             promotion.FechaInicio.Should().Be(dto.FechaInicio);
             promotion.FechaFin.Should().Be(dto.FechaFin);
-            promotion.Activo.Should().BeTrue();
-            promotion.FechaModificacion.Should().NotBeNull()
+            promotion.FechaModificacion.Should().Be(DateTime.Now.Date);
         }
 
         [Theory]
-        [DefaultData]
+        [DefaultData(typeof(ActivePromotionCustomization))]
         public void DeleteEntity_Valid_ShouldChangeActivoFalse(
             Entities.Promotion promotion
             )
         {
-            promotion.Delete();
-           
+            //arrange --ActivePromotionCustomization
+
+            //act
+            Action act = () => promotion.Delete();
+
+            //assert
+            act.Should().NotThrow();
             promotion.Activo.Should().BeFalse();
             promotion.FechaModificacion.Should().Be(DateTime.Now.Date);
         }
@@ -79,14 +91,36 @@ namespace Domain.Core.Tests.Models
            Entities.Promotion promotion
            )
         {
+            //arrange
             DateTime fechaInicio = new DateTime(2021, 2, 10);
             DateTime fechaFin = new DateTime(2021, 2, 20);
 
-            promotion.ChangeVigencia(fechaInicio, fechaFin);
+            //act
+            Action act = () => promotion.ChangeVigencia(fechaInicio, fechaFin);
 
+            //assert
+            act.Should().NotThrow();
             promotion.FechaInicio.Should().Be(fechaInicio);
             promotion.FechaFin.Should().Be(fechaFin);
             promotion.FechaModificacion.Should().Be(DateTime.Now.Date);
+        }
+
+        [Theory]
+        [DefaultData(typeof(InactivePromotionCustomization))]
+        public void DeleteEntity_ValidationThrowException_ShouldThrowException(
+             Promotion promotion
+            )
+        {
+            //arrange --InactivePromotionCustomization
+
+            //act
+            Action act = () => promotion.Delete();
+
+            //assert
+            act.Should().Throw<ArgumentException>();
+
+            promotion.Activo.Should().BeFalse();
+            promotion.FechaModificacion.Should().NotBe(DateTime.Now.Date);
         }
     }
 }

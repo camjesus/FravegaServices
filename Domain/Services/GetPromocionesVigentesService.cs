@@ -1,5 +1,6 @@
 ﻿using Domain.Core.Data;
-using FravegaService.Models;
+using Entities = FravegaService.Models;
+using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,10 @@ namespace FravegaService.Services
 
     public class GetPromocionesVigentesService : IGetPromocionesVigentesService
     {
-        private readonly ILogger<Promotion> _logger;
         private readonly IPromotionRepository _promotion;
 
-        public GetPromocionesVigentesService(ILogger<Promotion> logger, IPromotionRepository promotion)
+        public GetPromocionesVigentesService(IPromotionRepository promotion)
         {
-            _logger = logger;
             _promotion = promotion;
         }
 
@@ -30,7 +29,7 @@ namespace FravegaService.Services
             var promosEntity = await _promotion.FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual(true, DateTime.Now, fechaFin);
 
 
-            foreach (Promotion p in promosEntity)
+            foreach (Entities.Promotion p in promosEntity)
             {
                 CurrentPromotion cp = new CurrentPromotion();
                 cp.Id = p.Id;

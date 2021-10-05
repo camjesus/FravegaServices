@@ -15,13 +15,11 @@ namespace FravegaService.Services
 
     public class UpdateVigenciaService : IUpdateVigenciaService
     {
-        private readonly ILogger<Promotion> _logger;
         private readonly ValidarFechasService _validarFechas;
         private readonly IPromotionRepository _promotion;
 
-        public UpdateVigenciaService(ILogger<Promotion> logger, ValidarFechasService validarFechas, IPromotionRepository promotion)
+        public UpdateVigenciaService(ValidarFechasService validarFechas, IPromotionRepository promotion)
         {
-            _logger = logger;
             _validarFechas = validarFechas;
             _promotion = promotion;
         }
