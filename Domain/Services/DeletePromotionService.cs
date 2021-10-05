@@ -5,6 +5,7 @@ using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Domain.Core.Exceptions;
 
 namespace FravegaService.Services
 {
@@ -26,7 +27,14 @@ namespace FravegaService.Services
         {
             var promotionEntity = await _promotion.FindOneAsync(id);
 
-            promotionEntity.Delete();
+            try
+            {
+                promotionEntity.Delete();
+            }
+            catch (ArgumentException)
+            {
+                throw new PromotionAlreadyDeletedException();
+            }
 
             await _promotion.UpdateAsync(promotionEntity);
 

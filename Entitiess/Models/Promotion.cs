@@ -46,6 +46,9 @@ namespace FravegaService.Models
 
         public void Delete()
         {
+            if (Activo == false)
+                throw new ArgumentException("promoción ya eliminada");
+
             Activo = false;
         }
 
