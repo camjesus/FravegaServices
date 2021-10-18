@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace FravegaService.Services
+namespace Domain.Core.Services
 {
     public interface IGetPromocionByIdService
     {
@@ -17,7 +17,7 @@ namespace FravegaService.Services
 
         public GetPromocionByIdService(IPromotionRepository promotion)
         {
-            _promotion = promotion;
+            _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         }
 
         public async Task<Promotion> GetPromocionById(Guid id)

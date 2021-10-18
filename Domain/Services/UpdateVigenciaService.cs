@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace FravegaService.Services
+namespace Domain.Core.Services
 {
     public interface IUpdateVigenciaService
     {
@@ -20,8 +20,8 @@ namespace FravegaService.Services
 
         public UpdateVigenciaService(ValidarFechasService validarFechas, IPromotionRepository promotion)
         {
-            _validarFechas = validarFechas;
-            _promotion = promotion;
+            _validarFechas = validarFechas ?? throw new ArgumentNullException(nameof(validarFechas));
+            _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         }
 
         public async Task<Guid> UpdateVigencia(Guid id, DateTime fechaInicio, DateTime fechaFin)

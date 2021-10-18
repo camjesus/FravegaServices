@@ -6,7 +6,6 @@ using Domain.Core.Services;
 using Domain.Core.Tests.Services.Customizations;
 using FluentAssertions;
 using FravegaService.Domain.Core.DTO;
-using FravegaService.Services;
 using Moq;
 using System;
 using System.Threading.Tasks;

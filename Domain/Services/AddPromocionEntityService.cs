@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using FravegaService.Domain.Core.DTO;
 using Domain.Core.Services;
 
-namespace FravegaService.Services
+namespace Domain.Core.Services
 {
     public interface IAddPromocionEntityService
     {
@@ -25,7 +25,7 @@ namespace FravegaService.Services
         {
             _validarCrearPromocionService = validarPromocionService ?? throw new ArgumentNullException(nameof(validarPromocionService));
             _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
-        }
+        } 
 
         public async Task<Guid> AddPromocionEntity(Promotion promo)
         {

@@ -3,7 +3,7 @@ using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace FravegaService.Services
+namespace Domain.Core.Services
 {
     public interface IValidarCuotasService
     {
@@ -13,18 +13,16 @@ namespace FravegaService.Services
 
     public class ValidarCuotasService : IValidarCuotasService
     {
-        private readonly ILogger<Promotion> _logger;
-
-        public ValidarCuotasService(ILogger<Promotion> logger)
+        public ValidarCuotasService()
         {
-            _logger = logger;
+
         }
 
         public void ValidarCuotasYPorcentaje(Promotion promotion)
         {
             if (promotion.MaximaCantidadDeCuotas == null && promotion.PorcentajeDedescuento == null)
             {
-                _logger.LogError("Error en validacion de Promocion : La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
+                //_logger.LogError("Error en validacion de Promocion : La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
                 throw new CantidadDeCuotasOProcentajeDescuentoTieneQueTenerValorException();
             }
 
@@ -38,11 +36,9 @@ namespace FravegaService.Services
         {
             if (promotion.MaximaCantidadDeCuotas == null && promotion.ValorInteresesCuotas != null)
             {
-                _logger.LogError("Error en validacion de Promocion : La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
+                //_logger.LogError("Error en validacion de Promocion : La promoción al menos debe tener cantidad de cuotas o porcentaje de descuento");
                 throw new AlAgregarValorDeIntesDebeTenerCantidadDeCuotasException();
             }
         }
-
-        
     }
 }

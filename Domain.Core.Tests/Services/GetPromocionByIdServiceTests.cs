@@ -3,7 +3,6 @@ using Domain.Core.Data;
 using Domain.Core.Services;
 using FluentAssertions;
 using FravegaService.Domain.Core.DTO;
-using FravegaService.Services;
 using Moq;
 using System;
 using System.Threading.Tasks;

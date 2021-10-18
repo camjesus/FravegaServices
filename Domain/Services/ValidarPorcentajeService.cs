@@ -4,7 +4,7 @@ using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace FravegaService.Services
+namespace Domain.Core.Services
 {
     public interface IValidarPorcentajeService
     {

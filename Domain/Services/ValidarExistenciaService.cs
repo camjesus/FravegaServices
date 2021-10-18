@@ -4,7 +4,7 @@ using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace FravegaService.Services
+namespace Domain.Core.Services
 {
     public interface IValidarExistenciaService
     {
@@ -13,24 +13,22 @@ namespace FravegaService.Services
 
     public class ValidarExistenciaService : IValidarExistenciaService
     {
-        private readonly ILogger<Promotion> _logger;
         private readonly IPromotionRepository _promotion;
 
-        public ValidarExistenciaService(ILogger<Promotion> logger, IPromotionRepository promotion)
+        public ValidarExistenciaService(IPromotionRepository promotion)
         {
-            _logger = logger;
-            _promotion = promotion;
+            _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         }
 
         public void ValidarExistencia(Promotion promotion)
         {
-            _logger.LogInformation("Valido existencia");
+            //_logger.LogInformation("Valido existencia");
 
-            var promociones = _promotion.FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosInAsync(true, promotion.CategoriasProductos, promotion.MediosDePago, promotion.Bancos);
+            var promociones = _promotion.FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosInAsync(promotion.CategoriasProductos, promotion.MediosDePago, promotion.Bancos);
             
             if (promociones != null)
             {
-                _logger.LogError("Error en validacion de Promocion : Ya existe una Promocion para estos bancos, categoria o  medio de pago");
+                //_logger.LogError("Error en validacion de Promocion : Ya existe una Promocion para estos bancos, categoria o  medio de pago");
                 throw new YaExistePromocionException();
             }
         }

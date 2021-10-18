@@ -1,10 +1,11 @@
 ﻿using Domain.Core.Data;
 using FravegaService.Models;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FravegaService.Services
+namespace Domain.Core.Services
 {
     public interface IGetPromocionesService
     {
@@ -13,18 +14,16 @@ namespace FravegaService.Services
 
     public class GetPromocionesService : IGetPromocionesService
     {
-        private readonly ILogger<Promotion> _logger;
         private readonly IPromotionRepository _promotion;
 
-        public GetPromocionesService(ILogger<Promotion> logger, IPromotionRepository promotion)
+        public GetPromocionesService(IPromotionRepository promotion)
         {
-            _logger = logger;
-            _promotion = promotion;
+            _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         }
 
         public async Task<IEnumerable<Promotion>> GetPromociones()
         {
-            _logger.LogInformation("Obtengo todas las promociones");
+            //_logger.LogInformation("Obtengo todas las promociones");
             return await _promotion.GetAllAsync();
         }
     }

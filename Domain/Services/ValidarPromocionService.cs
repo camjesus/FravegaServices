@@ -1,5 +1,5 @@
 ﻿using FravegaService.Domain.Core.DTO;
-using FravegaService.Services;
+using Domain.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;

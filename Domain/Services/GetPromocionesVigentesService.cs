@@ -6,11 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FravegaService.Services
+namespace Domain.Core.Services
 {
     public interface IGetPromocionesVigentesService
     {
-        Task<IEnumerable<CurrentPromotion>> GetPromocionesVigentes(DateTime fecha, string banco, string medioDePago, IEnumerable<string> categorias);
+        Task<IEnumerable<CurrentPromotion>> GetPromocionesVigentes(DateTime fecha, IEnumerable<string> banco, IEnumerable<string> medioDePago, IEnumerable<string> categorias);
     }
 
     public class GetPromocionesVigentesService : IGetPromocionesVigentesService
@@ -19,14 +19,14 @@ namespace FravegaService.Services
 
         public GetPromocionesVigentesService(IPromotionRepository promotion)
         {
-            _promotion = promotion;
+            _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         }
 
-        public async Task<IEnumerable<CurrentPromotion>> GetPromocionesVigentes(DateTime fechaFin, string banco, string medioDePago, IEnumerable<string> categorias)
+        public async Task<IEnumerable<CurrentPromotion>> GetPromocionesVigentes(DateTime fechaFin, IEnumerable<string> banco, IEnumerable<string> medioDePago, IEnumerable<string> categorias)
         {
             List<CurrentPromotion> promoCurrent = new List<CurrentPromotion>();
 
-            var promosEntity = await _promotion.FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual(true, DateTime.Now, fechaFin);
+            var promosEntity = await _promotion.FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual(DateTime.Now.Date, fechaFin);
 
 
             foreach (Entities.Promotion p in promosEntity)

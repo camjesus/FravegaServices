@@ -6,7 +6,6 @@ using Domain.Core.Services;
 using Domain.Core.Tests.Services.Customizations;
 using FluentAssertions;
 using FravegaService.Domain.Core.DTO;
-using FravegaService.Services;
 using Moq;
 using System;
 using System.Threading.Tasks;
@@ -21,16 +20,21 @@ namespace Domain.Core.Tests.Services
         [DefaultData]
         public async Task UpdatePromocion_Valid_ShouldChangePromotion(
             Promotion dto,
-            [Frozen] Mock<IValidarPromocionService> validarCrearPromocionServiceMock,
+            Entities.Promotion promotion,
+            [Frozen] Mock<IValidarPromocionService> validarPromocionServiceMock,
             [Frozen] Mock<IPromotionRepository> promotionRepositoryMock,
             UpdatePromocionService sut
             )
         {
-            validarCrearPromocionServiceMock
+            validarPromocionServiceMock
                .Setup(x => x.ValidarAsync(dto))
                .Verifiable();
 
             Entities.Promotion entidadModificada = null;
+
+            promotionRepositoryMock
+               .Setup(x => x.FindOneAsync(dto.Id))
+               .ReturnsAsync(promotion);
 
             promotionRepositoryMock
                 .Setup(x => x.UpdateAsync(It.IsAny<Entities.Promotion>()))
@@ -41,12 +45,15 @@ namespace Domain.Core.Tests.Services
             var result = await sut.UpdatePromocion(dto);
 
             //assert
-
-            validarCrearPromocionServiceMock
+            
+            validarPromocionServiceMock
                 .Verify(x => x.ValidarAsync(dto), Times.Once);
 
             promotionRepositoryMock
-                .Verify(x => x.AddAsync(entidadModificada), Times.Once);
+                .Verify(x => x.UpdateAsync(entidadModificada), Times.Once);
+
+            promotionRepositoryMock
+               .Verify(x => x.FindOneAsync(dto.Id), Times.Once);
 
             entidadModificada.MediosDePago.Should().BeEquivalentTo(dto.MediosDePago);
             entidadModificada.Bancos.Should().BeEquivalentTo(dto.Bancos);
@@ -71,6 +78,7 @@ namespace Domain.Core.Tests.Services
             )
         {
             //arrange
+            Entities.Promotion entidadModificada = null;
 
             validaPromocionServiceMock
                 .Setup(x => x.ValidarAsync(dto))
@@ -80,6 +88,9 @@ namespace Domain.Core.Tests.Services
                 .Setup(x => x.AddAsync(It.IsAny<Entities.Promotion>()))
                 .Verifiable();
 
+            promotionRepositoryMock
+                .Setup(x => x.UpdateAsync(It.IsAny<Entities.Promotion>()))
+                .Callback((Entities.Promotion x) => entidadModificada = x);
             //act
 
             Func<Task> func = async () => await sut.UpdatePromocion(dto);

@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Domain.Core.Exceptions;
 
-namespace FravegaService.Services
+namespace Domain.Core.Services
 {
     public interface IDeletePromotionService
     {
@@ -20,7 +20,7 @@ namespace FravegaService.Services
 
         public DeletePromotionService( IPromotionRepository promotion)
         {
-            _promotion = promotion;
+            _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         }
 
         public async Task<Guid> DeletePromotion(Guid id)
