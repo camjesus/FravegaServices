@@ -11,6 +11,12 @@ using System.Threading.Tasks;
 using FravegaService.Models;
 using Domain.Core.Services;
 using Domain.Core.Data;
+using Infrastucture.Data.Mongo.Options;
+using Infrastucture.Data.Mongo;
+using MongoDB.Driver;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API
 {
@@ -26,12 +32,18 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mongoOptions = Configuration.GetSection(nameof(MongoOptions)).Get<MongoOptions>();
+
             services.AddRazorPages();
             //services.AddControllers().ConfigureApiBehaviorOptions(options =>
             //{
             //    options.SuppressModelStateInvalidFilter = true;
             //});
-            services.AddScoped<IAddPromocionEntityService, AddPromocionEntityService>()
+            
+
+            services.AddScoped<DataContext>()
+                    .AddSingleton(sp => new MongoClient(sp.GetRequiredService<IOptionsSnapshot<MongoOptions>>().Value.ConnectionString))
+                    .AddScoped<IAddPromocionEntityService, AddPromocionEntityService>()
                     .AddScoped<IDeletePromotionService, DeletePromotionService>()
                     .AddScoped<IValidarCuotasService, ValidarCuotasService>()
                     .AddScoped<IValidarPorcentajeService, ValidarPorcentajeService>()
@@ -40,7 +52,13 @@ namespace API
                     .AddScoped<IValidarFechasService, ValidarFechasService>()
                     .AddScoped<IPromotionRepository, PromotionRepository>();
 
+            MongoSetup.OnStartup();
 
+        }
+
+        private void AddSwaggerGen(Action<object> p)
+        {
+            throw new NotImplementedException();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

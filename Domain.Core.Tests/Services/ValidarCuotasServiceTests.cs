@@ -1,7 +1,7 @@
 ﻿using Domain.Core.Exceptions;
+using Domain.Core.Services;
 using FluentAssertions;
 using FravegaService.Domain.Core.DTO;
-using FravegaService.Services;
 using System;
 using Tests.Utils;
 using Xunit;
