@@ -3,12 +3,13 @@ using Domain.Core.Exceptions;
 using FravegaService.Domain.Core.DTO;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace Domain.Core.Services
 {
     public interface IValidarExistenciaService
     {
-        void ValidarExistencia(Promotion promo);
+        Task ValidarExistencia(Promotion promo);
     }
 
     public class ValidarExistenciaService : IValidarExistenciaService
@@ -20,11 +21,11 @@ namespace Domain.Core.Services
             _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         }
 
-        public void ValidarExistencia(Promotion promotion)
+        public async Task ValidarExistencia(Promotion promotion)
         {
             //_logger.LogInformation("Valido existencia");
 
-            var promociones = _promotion.FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosInAsync(promotion.CategoriasProductos, promotion.MediosDePago, promotion.Bancos);
+            var promociones = await _promotion.FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosInAsync(promotion.CategoriasProductos, promotion.MediosDePago, promotion.Bancos);
             
             if (promociones != null)
             {

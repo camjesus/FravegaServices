@@ -5,7 +5,6 @@ namespace FravegaService.Domain.Core.DTO
 {
     public class CurrentPromotion
     {
-      
         public Guid Id { get;  set; }
         public IEnumerable<string> MediosDePago { get;  set; }
         public IEnumerable<string> Bancos { get;  set; }
@@ -14,7 +13,5 @@ namespace FravegaService.Domain.Core.DTO
         public decimal? ValorInteresesCuotas { get;  set; }
         public decimal? PorcentajeDedescuento { get;  set; }
      
-    }
-
-   
+    } 
 }

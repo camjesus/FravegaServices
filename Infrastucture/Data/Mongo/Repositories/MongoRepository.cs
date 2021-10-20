@@ -14,11 +14,9 @@ namespace Infrastucture.Data.Mongo.Repositories
         where T : Promotion
     {
         private readonly DataContext _db;
-        private DataContext db;
-
         protected MongoRepository(DataContext db)
         {
-            this.db = db;
+            this._db = db;
         }
 
         protected abstract string CollectionName { get; }
@@ -33,9 +31,7 @@ namespace Infrastucture.Data.Mongo.Repositories
             }
             catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
             {
-                var oldEntity = await FindDuplicatedEntityAsync(entity);
-
-                throw new DuplicateEntityException<T>(oldEntity);
+                throw new DuplicateEntityException<T>(entity);
             }
         }
 
@@ -56,7 +52,5 @@ namespace Infrastucture.Data.Mongo.Repositories
         {
             return await CollectionQuery.ToListAsync();
         }
-
-        protected abstract Task<T> FindDuplicatedEntityAsync(T newEntity);
     }
 }

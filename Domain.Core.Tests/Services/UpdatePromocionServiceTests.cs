@@ -19,7 +19,7 @@ namespace Domain.Core.Tests.Services
         [Theory]
         [DefaultData]
         public async Task UpdatePromocion_Valid_ShouldChangePromotion(
-            Promotion dto,
+            PromotionUpd dto,
             Entities.Promotion promotion,
             [Frozen] Mock<IValidarPromocionService> validarPromocionServiceMock,
             [Frozen] Mock<IPromotionRepository> promotionRepositoryMock,
@@ -70,7 +70,7 @@ namespace Domain.Core.Tests.Services
         [Theory]
         [DefaultData]
         public async Task UpdatePromocion_Valid_ShouldThrow(
-           Promotion dto,
+           PromotionUpd dto,
             [Frozen] Mock<IValidarPromocionService> validaPromocionServiceMock,
             [Frozen] Mock<IPromotionRepository> promotionRepositoryMock,
             Exception exception,

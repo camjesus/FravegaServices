@@ -23,7 +23,8 @@ namespace Infrastucture.Data.Mongo
             BsonClassMap.RegisterClassMap<Promotion>(cm =>
             {
                 cm.AutoMap();
-                cm.SetIsRootClass(true);
+                //cm.SetIsRootClass(true); cuando hay herencia
+                cm.SetIdMember(cm.GetMemberMap(x => x.Id)); 
             });
         }
     }

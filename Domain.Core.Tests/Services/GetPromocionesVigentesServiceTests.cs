@@ -18,21 +18,20 @@ namespace Domain.Core.Tests.Services
         [Theory]
         [DefaultData]
         public async Task GetPromocionesVigentes_Valid_ShouldNotThrowException(
-            Promotion dto,
             IEnumerable<Entities.Promotion> promotions,
             [Frozen] Mock<IPromotionRepository> promotionRepositoryMock,
             GetPromocionesVigentesService sut 
             )
         {
             //arrange
-            DateTime fechaFin = new DateTime(2021, 12, 20);
+            DateTime fecha = new DateTime(2021, 12, 20);
 
             promotionRepositoryMock
-                .Setup(x => x.FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual( DateTime.Now.Date, fechaFin))
+                .Setup(x => x.FindPromocionesVigentesAsync(fecha))
                 .ReturnsAsync(promotions);
 
             //act
-            Func<Task> func = async () => await sut.GetPromocionesVigentes(fechaFin, dto.Bancos, dto.MediosDePago, dto.CategoriasProductos);
+            Func<Task> func = async () => await sut.GetPromocionesVigentesAsync(fecha);
 
             //assert
             await func
@@ -40,28 +39,27 @@ namespace Domain.Core.Tests.Services
                  .NotThrowAsync();
 
             promotionRepositoryMock
-                .Verify(x => x.FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual(DateTime.Now.Date, fechaFin), Times.Once);
+                .Verify(x => x.FindPromocionesVigentesAsync(fecha), Times.Once);
         }
 
 
         [Theory]
         [DefaultData]
         public async Task GetPromocionById_Valid_ShouldThrowException(
-             Promotion dto,
              Exception exception,
              [Frozen] Mock<IPromotionRepository> promotionRepositoryMock,
              GetPromocionesVigentesService sut
              )
         {
             //arrange
-            DateTime fechaFin = new DateTime(2021, 12, 20);
+            DateTime fecha = new DateTime(2021, 12, 20);
 
             promotionRepositoryMock
-                .Setup(x => x.FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual(DateTime.Now.Date, fechaFin))
+                .Setup(x => x.FindPromocionesVigentesAsync(fecha))
                 .Throws(exception);
 
             //act
-            Func<Task> func = async () => await sut.GetPromocionesVigentes(fechaFin, dto.Bancos, dto.MediosDePago, dto.CategoriasProductos);
+            Func<Task> func = async () => await sut.GetPromocionesVigentesAsync(fecha);
 
             //assert
             await func
@@ -69,7 +67,7 @@ namespace Domain.Core.Tests.Services
                  .ThrowAsync<Exception>();
 
             promotionRepositoryMock
-                .Verify(x => x.FindByActivoAndFechaInicioGreaterThanEqualAndFechaFinLeesThanEqual(DateTime.Now.Date, fechaFin), Times.Once);
+                .Verify(x => x.FindPromocionesVigentesAsync(fecha), Times.Once);
         }
     }
 

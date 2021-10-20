@@ -10,7 +10,7 @@ namespace Domain.Core.Services
 {
     public interface IUpdatePromocionService
     {
-        Task<Guid> UpdatePromocion(Promotion promotion);
+        Task<Guid> UpdatePromocion(PromotionUpd promotion);
     }
 
     public class UpdatePromocionService : IUpdatePromocionService
@@ -26,7 +26,7 @@ namespace Domain.Core.Services
             _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         }
 
-        public async Task<Guid> UpdatePromocion(Promotion promotion)
+        public async Task<Guid> UpdatePromocion(PromotionUpd promotion)
         {
             //_logger.LogInformation("Update Promocion Id:" + promotion.Id);
             await _validarPromocion.ValidarAsync(promotion);

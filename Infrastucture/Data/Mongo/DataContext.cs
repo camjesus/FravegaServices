@@ -24,26 +24,9 @@ namespace Infrastucture.Data.Mongo
 
         public IMongoCollection<T> Collection<T>(string name) => _db.GetCollection<T>(name);
 
-        public async Task CreateIndexesAsync()
-        {
-            await CreatePromotionIndexes();
-        }
-        private async Task CreatePromotionIndexes()
-        {
-            var indexUniqueByPromotion = new CreateIndexModel<Promotion>(
-                Builders<Promotion>.IndexKeys
-                    //.Ascending(x => x.Id)
-                    .Ascending(x => x.MediosDePago)
-                    .Ascending(x => x.Bancos)
-                    .Ascending(x => x.CategoriasProductos));
-
-            await _db.GetCollection<Promotion>(ClientsCollectionName)
-                .Indexes
-                .CreateManyAsync(new List<CreateIndexModel<Promotion>>
-                {
-                    indexUniqueByPromotion
-                });
-        }
-
+        //public async Task CreateIndexesAsync()
+        //{
+        //}
+       
     }
 }

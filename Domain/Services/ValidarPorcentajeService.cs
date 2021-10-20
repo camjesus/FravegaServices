@@ -13,19 +13,19 @@ namespace Domain.Core.Services
 
     public class ValidarPorcentajeService : IValidarPorcentajeService
     {
-        private readonly ILogger<Promotion> _logger;
+        //private readonly ILogger<Promotion> _logger;
 
-        public ValidarPorcentajeService(ILogger<Promotion> logger)
+        public ValidarPorcentajeService()
         {
-            _logger = logger;
+            //_logger = logger;
         }
 
         public void ValidarPorcentaje(Promotion promotion)
         {
-            _logger.LogInformation("Se valida el porcentaje");
+            //_logger.LogInformation("Se valida el porcentaje");
             if (promotion.PorcentajeDedescuento < 5 || promotion.PorcentajeDedescuento > 80)
             {
-                _logger.LogError("El porcentaje de descuento esta fuera del rango permitido. porcentaje:" + promotion.PorcentajeDedescuento);
+                //_logger.LogError("El porcentaje de descuento esta fuera del rango permitido. porcentaje:" + promotion.PorcentajeDedescuento);
                 throw new ElPorcentanjeEstaFueraDelRangoPermitidoException();
             }
         }

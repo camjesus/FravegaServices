@@ -34,11 +34,11 @@ namespace Domain.Core.Services
 
         public async Task ValidarAsync(Promotion promotion)
         {
-            _validarExistenciaSrv.ValidarExistencia(promotion);
-            _validarCuotasSrv.ValidarCuotasYPorcentaje(promotion);
-            _validarCuotasSrv.ValidarValorInteres(promotion);
-            _validarPorcentajeSrv.ValidarPorcentaje(promotion);
-            _validarFechasSrv.ValidarFechas((DateTime)promotion.FechaInicio, (DateTime)promotion.FechaFin);
+                await _validarExistenciaSrv.ValidarExistencia(promotion);
+                _validarCuotasSrv.ValidarCuotasYPorcentaje(promotion);
+                _validarCuotasSrv.ValidarValorInteres(promotion);
+                _validarPorcentajeSrv.ValidarPorcentaje(promotion);
+                _validarFechasSrv.ValidarFechas((DateTime)promotion.FechaInicio, (DateTime)promotion.FechaFin);
         }
     }
 }

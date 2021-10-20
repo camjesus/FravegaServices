@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace FravegaService.Models
 {
@@ -53,6 +54,7 @@ namespace FravegaService.Models
             FechaModificacion = DateTime.Now.Date;
         }
 
+        [Key]
         public Guid Id { get; private set; }
         public IEnumerable<string> MediosDePago { get; private set; }
         public IEnumerable<string> Bancos { get; private set; }

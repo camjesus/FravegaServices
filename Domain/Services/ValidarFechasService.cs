@@ -13,19 +13,19 @@ namespace Domain.Core.Services
 
     public class ValidarFechasService : IValidarFechasService
     {
-        private readonly ILogger<Promotion> _logger;
+        //private readonly ILogger<Promotion> _logger;
 
-        public ValidarFechasService(ILogger<Promotion> logger)
+        public ValidarFechasService()
         {
-            _logger = logger;
+            //_logger = logger;
         }
 
         public void ValidarFechas(DateTime fechaInicio, DateTime fechaFin)
         {
-            _logger.LogInformation("Se validan las fechas");
+            //_logger.LogInformation("Se validan las fechas");
             if (fechaInicio > fechaFin)
             {
-                _logger.LogError("La fecha de inicio no puede se mayor a fecha fin");
+                //_logger.LogError("La fecha de inicio no puede se mayor a fecha fin");
                 throw new FechaInicioMayorFechaFinException();
             }
         }

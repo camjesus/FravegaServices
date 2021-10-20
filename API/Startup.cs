@@ -17,14 +17,23 @@ using MongoDB.Driver;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using API.Controller;
+using Infrastucture.Data.Mongo.Repositories;
 
 namespace API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true)
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -33,25 +42,51 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             var mongoOptions = Configuration.GetSection(nameof(MongoOptions)).Get<MongoOptions>();
-
-            services.AddRazorPages();
-            //services.AddControllers().ConfigureApiBehaviorOptions(options =>
-            //{
-            //    options.SuppressModelStateInvalidFilter = true;
-            //});
-            
+            services.AddOptions()
+                    .Configure<MongoOptions>(Configuration.GetSection(nameof(MongoOptions)));
 
             services.AddScoped<DataContext>()
-                    .AddSingleton(sp => new MongoClient(sp.GetRequiredService<IOptionsSnapshot<MongoOptions>>().Value.ConnectionString))
+                    .AddSingleton(sp => new MongoClient(mongoOptions.ConnectionString))
                     .AddScoped<IAddPromocionEntityService, AddPromocionEntityService>()
                     .AddScoped<IDeletePromotionService, DeletePromotionService>()
+                    .AddScoped<IGetPromocionByIdService, GetPromocionByIdService>()
+                    .AddScoped<IGetPromocionesService, GetPromocionesService>()
+                    .AddScoped<IGetPromocionesVigentesService, GetPromocionesVigentesService>()
                     .AddScoped<IValidarCuotasService, ValidarCuotasService>()
                     .AddScoped<IValidarPorcentajeService, ValidarPorcentajeService>()
                     .AddScoped<IValidarPromocionService, ValidarPromocionService>()
                     .AddScoped<IValidarExistenciaService, ValidarExistenciaService>()
                     .AddScoped<IValidarFechasService, ValidarFechasService>()
+                    .AddScoped<IUpdatePromocionService, UpdatePromocionService>()
+                    .AddScoped<IUpdateVigenciaService, UpdateVigenciaService>()
                     .AddScoped<IPromotionRepository, PromotionRepository>();
+                    
+            
+                
+             services.AddApiVersioning(options =>
+                {
+                    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+                    options.ReportApiVersions = true;
+                    options.AssumeDefaultVersionWhenUnspecified = true;
+                    options.DefaultApiVersion = new ApiVersion(1, 0);
 
+                    options.Conventions.Controller<PromotionController>().HasApiVersion(new ApiVersion(1, 0));
+                })
+                .AddSwaggerGen(c =>
+              {
+                  c.CustomSchemaIds(x => x.FullName);
+                  c.SwaggerDoc("v1", new OpenApiInfo
+                  {
+                      Version = "v1",
+                      Title = "OMS Clients auth module",
+                      Description = "OMS Clients auth module"
+                  });
+              })
+                .AddMvc(options =>
+                {
+                    //options.UseCentralRoutePrefix(new RouteAttribute("v{version:apiVersion}"));
+                    options.Filters.Add(new ProducesAttribute("application/json"));
+                });
             MongoSetup.OnStartup();
 
         }
@@ -68,24 +103,40 @@ namespace API
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
             app.UseRouting();
+            app.UseStatusCodePages();
 
-            app.UseAuthorization();
+            app
+              .UseEndpoints(endpoints =>
+              {
+                  endpoints.MapControllers();
+              })
+                .UseSwagger(c =>
+                {
+                    c.RouteTemplate = "help/docs/{documentName}/swagger.json";
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-            });
+                    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                    {
+                        if (httpReq.Headers.ContainsKey("x-base-path"))
+                        {
+                            swaggerDoc.Servers = new List<OpenApiServer>
+                            {
+                                new OpenApiServer
+                                {
+                                    Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/{httpReq.Headers["x-base-path"].ToString().Trim('/')}"
+                                }
+                            };
+                        }
+                    });
+                })
+                .UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("docs/v1/swagger.json", "OMS clients auth module V1");
+                    c.RoutePrefix = "help";
+                    c.DefaultModelsExpandDepth(-1);
+                });
         }
     }
 }

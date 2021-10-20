@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace FravegaService.Domain.Core.DTO
 {
-    public class Promotion : BaseEntity
+    public class Promotion
     {
         public IEnumerable<string> MediosDePago { get; set; }
         public IEnumerable<string> Bancos { get; set; }
