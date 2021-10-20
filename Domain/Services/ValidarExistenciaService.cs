@@ -1,7 +1,5 @@
 ﻿using Domain.Core.Data;
-using Domain.Core.Exceptions;
 using FravegaService.Domain.Core.DTO;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -25,13 +23,16 @@ namespace Domain.Core.Services
         {
             //_logger.LogInformation("Valido existencia");
 
-            var promociones = await _promotion.FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosInAsync(promotion.CategoriasProductos, promotion.MediosDePago, promotion.Bancos);
-            
-            if (promociones != null)
-            {
-                //_logger.LogError("Error en validacion de Promocion : Ya existe una Promocion para estos bancos, categoria o  medio de pago");
-                throw new YaExistePromocionException();
-            }
+            //var promociones = await _promotion.FindByActivoAndCategoriasProductosInAndMediosDePagoInAndBancosInAsync(
+            //    promotion.CategoriasProductos,
+            //    promotion.MediosDePago,
+            //    promotion.Bancos);
+
+            //if (promociones != null)
+            //{
+            //    //_logger.LogError("Error en validacion de Promocion : Ya existe una Promocion para estos bancos, categoria o  medio de pago");
+            //    throw new YaExistePromocionException();
+            //}
         }
     }
 }

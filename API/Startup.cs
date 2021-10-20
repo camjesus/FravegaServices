@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using API.Controller;
 using Infrastucture.Data.Mongo.Repositories;
+using API.Middlewares;
 
 namespace API
 {
@@ -42,36 +43,35 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             var mongoOptions = Configuration.GetSection(nameof(MongoOptions)).Get<MongoOptions>();
-            services.AddOptions()
-                    .Configure<MongoOptions>(Configuration.GetSection(nameof(MongoOptions)));
-
-            services.AddScoped<DataContext>()
-                    .AddSingleton(sp => new MongoClient(mongoOptions.ConnectionString))
-                    .AddScoped<IAddPromocionEntityService, AddPromocionEntityService>()
-                    .AddScoped<IDeletePromotionService, DeletePromotionService>()
-                    .AddScoped<IGetPromocionByIdService, GetPromocionByIdService>()
-                    .AddScoped<IGetPromocionesService, GetPromocionesService>()
-                    .AddScoped<IGetPromocionesVigentesService, GetPromocionesVigentesService>()
-                    .AddScoped<IValidarCuotasService, ValidarCuotasService>()
-                    .AddScoped<IValidarPorcentajeService, ValidarPorcentajeService>()
-                    .AddScoped<IValidarPromocionService, ValidarPromocionService>()
-                    .AddScoped<IValidarExistenciaService, ValidarExistenciaService>()
-                    .AddScoped<IValidarFechasService, ValidarFechasService>()
-                    .AddScoped<IUpdatePromocionService, UpdatePromocionService>()
-                    .AddScoped<IUpdateVigenciaService, UpdateVigenciaService>()
-                    .AddScoped<IPromotionRepository, PromotionRepository>();
-                    
             
+            services
+                .AddOptions()
+                .Configure<MongoOptions>(Configuration.GetSection(nameof(MongoOptions)))
+                .AddScoped<DataContext>()
+                .AddSingleton(sp => new MongoClient(mongoOptions.ConnectionString))
+                .AddScoped<IAddPromocionEntityService, AddPromocionEntityService>()
+                .AddScoped<IDeletePromotionService, DeletePromotionService>()
+                .AddScoped<IGetPromocionByIdService, GetPromocionByIdService>()
+                .AddScoped<IGetPromocionesService, GetPromocionesService>()
+                .AddScoped<IGetPromocionesVigentesService, GetPromocionesVigentesService>()
+                .AddScoped<IValidarCuotasService, ValidarCuotasService>()
+                .AddScoped<IValidarPorcentajeService, ValidarPorcentajeService>()
+                .AddScoped<IValidarPromocionService, ValidarPromocionService>()
+                .AddScoped<IValidarExistenciaService, ValidarExistenciaService>()
+                .AddScoped<IValidarFechasService, ValidarFechasService>()
+                .AddScoped<IUpdatePromocionService, UpdatePromocionService>()
+                .AddScoped<IUpdateVigenciaService, UpdateVigenciaService>()
+                .AddScoped<IPromotionRepository, PromotionRepository>();
                 
              services.AddApiVersioning(options =>
-                {
-                    options.ApiVersionReader = new UrlSegmentApiVersionReader();
-                    options.ReportApiVersions = true;
-                    options.AssumeDefaultVersionWhenUnspecified = true;
-                    options.DefaultApiVersion = new ApiVersion(1, 0);
+             {
+                options.ApiVersionReader = new UrlSegmentApiVersionReader();
+                options.ReportApiVersions = true;
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
 
-                    options.Conventions.Controller<PromotionController>().HasApiVersion(new ApiVersion(1, 0));
-                })
+                options.Conventions.Controller<PromotionController>().HasApiVersion(new ApiVersion(1, 0));
+             })
                 .AddSwaggerGen(c =>
               {
                   c.CustomSchemaIds(x => x.FullName);
@@ -87,8 +87,8 @@ namespace API
                     //options.UseCentralRoutePrefix(new RouteAttribute("v{version:apiVersion}"));
                     options.Filters.Add(new ProducesAttribute("application/json"));
                 });
-            MongoSetup.OnStartup();
 
+            MongoSetup.OnStartup();
         }
 
         private void AddSwaggerGen(Action<object> p)
@@ -99,10 +99,7 @@ namespace API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseHttpsRedirection();
             app.UseRouting();

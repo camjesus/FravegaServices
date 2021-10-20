@@ -31,7 +31,7 @@ namespace Infrastucture.Data.Mongo.Repositories
             }
             catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
             {
-                throw new DuplicateEntityException<T>(entity);
+                throw new DuplicateEntityException<T>();
             }
         }
 

@@ -3,7 +3,6 @@ using Infrastucture.Data.Mongo.Options;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Infrastucture.Data.Mongo
@@ -14,7 +13,7 @@ namespace Infrastucture.Data.Mongo
 
         internal static string ClientsCollectionName => "promotions";
 
-        public DataContext(MongoClient client, IOptionsSnapshot<MongoOptions> options)
+        public DataContext(MongoClient client, IOptions<MongoOptions> options)
         {
             if (client == null) throw new ArgumentNullException(nameof(client));
             if (options == null || options.Value == null) throw new ArgumentNullException(nameof(options));
@@ -24,9 +23,16 @@ namespace Infrastucture.Data.Mongo
 
         public IMongoCollection<T> Collection<T>(string name) => _db.GetCollection<T>(name);
 
-        //public async Task CreateIndexesAsync()
-        //{
-        //}
-       
+        public async Task CreateIndexesAsync()
+        {
+            var hashUniqueIndex = new CreateIndexModel<Promotion>(
+                Builders<Promotion>.IndexKeys.Ascending(x => x.Hash),
+                new CreateIndexOptions<Promotion>()
+                {
+                    Unique = true
+                });
+
+            await _db.GetCollection<Promotion>(ClientsCollectionName).Indexes.CreateOneAsync(hashUniqueIndex);
+        }
     }
 }

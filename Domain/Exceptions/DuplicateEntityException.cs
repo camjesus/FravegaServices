@@ -1,13 +1,16 @@
 ﻿namespace Domain.Core.Exceptions
 {
-    public class DuplicateEntityException<T> : UserException
+    public class DuplicateEntityException : UserException
     {
-        public T OldEntity { get; }
+        public DuplicateEntityException(string entity)
+            : base($"Duplicate entry: {entity}")
+        { }
+    }
 
-        public DuplicateEntityException(T oldEntity)
-            : base("Duplicate entry")
-        {
-            OldEntity = oldEntity;
-        }
+    public class DuplicateEntityException<T> : DuplicateEntityException
+    {
+        public DuplicateEntityException()
+            : base(nameof(T))
+        { }
     }
 }

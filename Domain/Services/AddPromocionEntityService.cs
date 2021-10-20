@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using FravegaService.Domain.Core.DTO;
 using Domain.Core.Services;
+using Domain.Core.Exceptions;
 
 namespace Domain.Core.Services
 {
@@ -27,16 +28,43 @@ namespace Domain.Core.Services
             _promotion = promotion ?? throw new ArgumentNullException(nameof(promotion));
         } 
 
-        public async Task<Guid> AddPromocionEntity(Promotion promo)
+        public async Task<Guid> AddPromocionEntity(Promotion promo) //insert positivo
         {
             await _validarCrearPromocionService.ValidarAsync(promo);
 
             var promocionEntity = new Entities.Promotion(promo.MediosDePago, promo.Bancos, promo.CategoriasProductos, promo.MaximaCantidadDeCuotas,
                 promo.ValorInteresesCuotas, promo.PorcentajeDedescuento, promo.FechaInicio, promo.FechaFin);
 
-            await _promotion.AddAsync(promocionEntity);
-            
-            return promocionEntity.Id;
+            try
+            {
+                await _promotion.AddAsync(promocionEntity);
+                return promocionEntity.Id;
+            }
+            catch (DuplicateEntityException)
+            {
+                var duplicatedPromotion = await _promotion.FindOneAsync(promocionEntity.Hash);
+                return duplicatedPromotion.Id;
+            }
+        }
+
+        public async Task<Guid> AddPromocionEntity2(Promotion promo) //negativo
+        {
+            await _validarCrearPromocionService.ValidarAsync(promo);
+
+            var promocionEntity = new Entities.Promotion(promo.MediosDePago, promo.Bancos, promo.CategoriasProductos, promo.MaximaCantidadDeCuotas,
+                promo.ValorInteresesCuotas, promo.PorcentajeDedescuento, promo.FechaInicio, promo.FechaFin);
+
+            var duplicatedPromotion = await _promotion.FindOneAsync(promocionEntity.Hash);
+
+            if(duplicatedPromotion == null)
+            {
+                await _promotion.AddAsync(promocionEntity);
+                return promocionEntity.Id;
+            }
+            else
+            {
+                return duplicatedPromotion.Id;
+            }
         }
     }
 }

@@ -6,6 +6,23 @@ namespace FravegaService.Models
 {
     public class Promotion
     {
+
+        [Key]
+        public Guid Id { get; private set; }
+        public IEnumerable<string> MediosDePago { get; private set; }
+        public IEnumerable<string> Bancos { get; private set; }
+        public IEnumerable<string> CategoriasProductos { get; private set; }
+        public int? MaximaCantidadDeCuotas { get; private set; }
+        public decimal? ValorInteresesCuotas { get; private set; }
+        public decimal? PorcentajeDedescuento { get; private set; }
+        public DateTime? FechaInicio { get; private set; }
+        public DateTime? FechaFin { get; private set; }
+        public bool Activo { get; private set; }
+        public DateTime FechaCreacion { get; private set; }
+        public DateTime? FechaModificacion { get; private set; }
+
+        public string Hash { get; private set; }
+
         public Promotion(IEnumerable<string> mediosDePago, IEnumerable<string> bancos, IEnumerable<string> categoriasProductos, int? maximaCantidadDeCuotas,
            decimal? valorInteresesCuotas, decimal? porcentajeDedescuento, DateTime? fechaInicio, DateTime? fechaFin)
         {
@@ -20,7 +37,8 @@ namespace FravegaService.Models
             FechaFin = fechaFin;
             Activo = true;
             FechaCreacion = DateTime.Now.Date;
-            FechaModificacion = null;
+
+            SetHash();
         }
 
         //Update
@@ -35,14 +53,16 @@ namespace FravegaService.Models
             PorcentajeDedescuento = porcentajeDedescuento;
             FechaInicio = fechaInicio;
             FechaFin = fechaFin;
-            FechaModificacion = DateTime.Now.Date;
+
+            Update();
         }
 
         public void ChangeVigencia(DateTime? fechaInicio, DateTime? fechaFin)
         {
             FechaInicio = fechaInicio;
             FechaFin = fechaFin;
-            FechaModificacion = DateTime.Now.Date;
+
+            Update();
         }
 
         public void Delete()
@@ -51,22 +71,19 @@ namespace FravegaService.Models
                 throw new ArgumentException("promoción ya eliminada");
 
             Activo = false;
-            FechaModificacion = DateTime.Now.Date;
+
+            Update();
         }
 
-        [Key]
-        public Guid Id { get; private set; }
-        public IEnumerable<string> MediosDePago { get; private set; }
-        public IEnumerable<string> Bancos { get; private set; }
-        public IEnumerable<string> CategoriasProductos { get; private set; }
-        public int? MaximaCantidadDeCuotas { get; private set; }
-        public decimal? ValorInteresesCuotas { get; private set; }
-        public decimal? PorcentajeDedescuento { get; private set; }
-        public DateTime? FechaInicio { get; private set; }
-        public DateTime? FechaFin { get; private set; }
+        private void Update()
+        {
+            FechaModificacion = DateTime.Now.Date;
+            SetHash();
+        }
 
-        public bool Activo { get; private set; }
-        public DateTime FechaCreacion { get; private set; }
-        public DateTime? FechaModificacion { get; private set; }
+        private void SetHash()
+        {
+            Hash = $"{string.Join(",", MediosDePago)}{string.Join(",", Bancos)}{string.Join(",", CategoriasProductos)}{MaximaCantidadDeCuotas}{ValorInteresesCuotas}{PorcentajeDedescuento}{FechaInicio}{FechaFin}{Activo}";
+        }
     }
 }

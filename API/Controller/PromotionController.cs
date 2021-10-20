@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.Core.Services;
+using FravegaService.Domain.Core.DTO;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Entities = FravegaService.Models;
-using Domain.Core.Services;
-using FravegaService.Domain.Core.DTO;
 
 namespace API.Controller
 {
-    [Route("promotions")]
+    [Route("promotion")]
     [ApiController]
     public class PromotionController : ControllerBase
     {
@@ -21,30 +20,28 @@ namespace API.Controller
         private readonly IUpdateVigenciaService _updateVigenciaService;
         private readonly IDeletePromotionService _deletePromotionService;
 
-        public PromotionController(IGetPromocionByIdService getPromocionByIdService, 
-                                   IAddPromocionEntityService addPromocionEntityService, 
-                                   IGetPromocionesVigentesService getPromocionesVigentesService,
-                                   IGetPromocionesService getPromocionesService,
-                                   IUpdatePromocionService updatePromocionService,
-                                   IUpdateVigenciaService updateVigenciaService,
-                                   IDeletePromotionService deletePromotionService)
+        public PromotionController(
+            IGetPromocionByIdService getPromocionByIdService,
+            IAddPromocionEntityService addPromocionEntityService,
+            IGetPromocionesVigentesService getPromocionesVigentesService,
+            IGetPromocionesService getPromocionesService,
+            IUpdatePromocionService updatePromocionService,
+            IUpdateVigenciaService updateVigenciaService,
+            IDeletePromotionService deletePromotionService)
         {
-            this._getPromocionByIdService = getPromocionByIdService ?? throw new ArgumentNullException(nameof(getPromocionByIdService));
-            this._addPromocionEntityService = addPromocionEntityService ?? throw new ArgumentNullException(nameof(addPromocionEntityService));
-            this._getPromocionesVigentesService = getPromocionesVigentesService ?? throw new ArgumentNullException(nameof(getPromocionesVigentesService));
-            this._getPromocionesService = getPromocionesService ?? throw new ArgumentNullException(nameof(getPromocionesService));
-            this._updatePromocionService = updatePromocionService ?? throw new ArgumentNullException(nameof(updatePromocionService));
-            this._updateVigenciaService = updateVigenciaService ?? throw new ArgumentNullException(nameof(updateVigenciaService));
-            this._deletePromotionService = deletePromotionService ?? throw new ArgumentNullException(nameof(deletePromotionService));
-
+            _getPromocionByIdService = getPromocionByIdService ?? throw new ArgumentNullException(nameof(getPromocionByIdService));
+            _addPromocionEntityService = addPromocionEntityService ?? throw new ArgumentNullException(nameof(addPromocionEntityService));
+            _getPromocionesVigentesService = getPromocionesVigentesService ?? throw new ArgumentNullException(nameof(getPromocionesVigentesService));
+            _getPromocionesService = getPromocionesService ?? throw new ArgumentNullException(nameof(getPromocionesService));
+            _updatePromocionService = updatePromocionService ?? throw new ArgumentNullException(nameof(updatePromocionService));
+            _updateVigenciaService = updateVigenciaService ?? throw new ArgumentNullException(nameof(updateVigenciaService));
+            _deletePromotionService = deletePromotionService ?? throw new ArgumentNullException(nameof(deletePromotionService));
         }
 
         [HttpGet]
         [Route("{id}")]
         public async Task<Entities.Promotion> GetByIdAsync([FromRoute] Guid id)
-        {
-            return await _getPromocionByIdService.GetPromocionById(id);
-        }
+            => await _getPromocionByIdService.GetPromocionById(id);
 
         [HttpGet]
         public async Task<IEnumerable<Entities.Promotion>> GetAllAsync()
@@ -54,7 +51,8 @@ namespace API.Controller
 
         [HttpGet]
         [Route("{date}/current")]
-        public async Task<IEnumerable<CurrentPromotion>> GetAllVigentesAsync([FromRoute] DateTime date)
+        [Route("current")]  ///promotions/current?date={date}
+        public async Task<IEnumerable<CurrentPromotion>> GetAllVigentesAsync([FromQuery] DateTime date)
         {
             return await _getPromocionesVigentesService.GetPromocionesVigentesAsync(date);
         }
@@ -66,7 +64,6 @@ namespace API.Controller
             return await _getPromocionesVigentesService.GetPromocionesFilterVigentesAsync(banco, medioDePago, categorias);
         }
 
-
         [HttpPost]
         public async Task<Guid> CreateAsync([FromBody] Promotion promotion)
         {
@@ -74,7 +71,7 @@ namespace API.Controller
         }
 
         [HttpPost]
-        [Route("{id}/update")]
+        [Route("{id}")]
         public async Task<Guid> UpdateAsync([FromRoute] Guid id, [FromBody] PromotionUpd promotion)
         {
             promotion.Id = id;
